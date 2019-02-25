@@ -1,0 +1,28 @@
+---
+- hosts: localhost
+  become: true
+  vars_prompt:
+     name: service_name
+     prompt: enter the service name
+  tasks:
+   - name: apiservice_status_check
+     shell: service "{{service_name}}" status
+     register: apiservice_status_check
+     ignore_errors: true
+     args:
+      warn: false
+   - debug:
+      var: apiservice_status_check.stdout_lines
+   - name: grep gunicorn_django
+     shell: ps -aux | grep gunicorn_django | grep -v grep
+     register: process_check
+   - debug:
+      var: process_check.stdout_lines
+   # starting servive if it is stopped  
+   - name: starting api service
+     shell: service "{{service_name}}" start
+     ignore_errors: true
+     when: apiservice_status_check | failed
+
+
+...

@@ -1,0 +1,24 @@
+---
+
+- hosts: localhost
+  become: true
+  tasks:
+   # checking the process status
+    - name: checking the process status
+      shell: ps aux | grep pgpool
+      register: process_check
+    - debug:
+        msg: "{{process_check.stdout}}"
+   # checking the service status
+    - name: checking pgpool2-dbcfg status
+      shell: service pgpool2-dbcfg status
+      register: service_status
+      ignore_errors: true
+      args:
+       warn: false
+    - debug:
+       msg: "{{service_status.stdout}}"
+
+
+...
+

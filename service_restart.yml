@@ -1,0 +1,26 @@
+---
+- hosts: localhost
+  become: true
+  vars_prompt:
+       name: service_name
+       prompt: enter the service name
+  tasks:
+      - name: service status
+        shell: service "{{service_name}}" status
+        register: service_check
+        ignore_errors: True
+        args:
+         warn: false
+      - debug:
+         var: service_check.stdout_lines
+      - name: restart service "{{service_name}}"
+        shell: service "{{service_name}}" restart
+        ignore_errors: True
+        when: service_check | failed
+
+
+
+...
+
+
+

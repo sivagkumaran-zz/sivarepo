@@ -1,0 +1,13 @@
+---
+ - hosts: localhost 
+   become: true
+   tasks:
+     - name: Memory check
+       shell: ps -eo pmem,pcpu,pid,user,args,psr|sort  -k 1 -r|head -10
+       register: memory_check
+     - debug:
+        var: memory_check.stdout_lines
+
+
+...
+

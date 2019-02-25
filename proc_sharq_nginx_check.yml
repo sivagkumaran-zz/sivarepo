@@ -1,0 +1,17 @@
+---
+- hosts: localhost
+  become: true
+  tasks:
+   - name: proc_sharq_nginx_check
+     shell: ps axf | grep nginx | grep -v grep
+     register: service_nginx_check
+     ignore_errors: true
+     args:
+      warn: false
+   - debug:
+      var: proc_sharq_nginx_check.stdout.lines
+ # starting the nginx service if it is stopped
+   - name: starting nginx service
+     shell: service nginx restart
+     ignore_errors: true
+     when: service_nginx_check_status | failed

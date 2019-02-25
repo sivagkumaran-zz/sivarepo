@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  become: true
+  tasks:
+    - name: disk_usage_check
+      shell: df -h /
+      register: disk_usage_check
+    - debug:
+       var: disk_usage_check.stdout_lines
+
+
+
+...
